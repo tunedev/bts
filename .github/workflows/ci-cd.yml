@@ -71,7 +71,6 @@ jobs:
           script_stop: true
           script: |
             set -euo pipefail
-            cd /path/to/your/app
             # Pull the staging tag set above (last tag in list is 'staging', which tracks latest staging)
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/bts2025-server:staging
             docker stop bts2025-server-cont || true
@@ -97,7 +96,6 @@ jobs:
           script_stop: true
           script: |
             set -euo pipefail
-            cd /path/to/your/app
             # Use the immutable release tag for prod for precise rollbacks
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/bts2025-server:${{ github.event.release.tag_name }}
             docker stop bts2025-server-cont || true
