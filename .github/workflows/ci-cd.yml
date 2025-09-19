@@ -74,14 +74,14 @@ jobs:
             IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/bts2025-server:staging
 
             mkdir -p /etc/myapp
-            gcloud secrets versions access latest --secret="bts-2025-staging" > /etc/myapp/myapp.env
-            chmod 600 /etc/myapp/myapp.env
+            gcloud secrets versions access latest --secret="bts-2025-staging" > myapp/myapp.env
+            chmod 600 myapp/myapp.env
 
             docker pull "$IMAGE"
             docker stop bts2025-server-cont || true
             docker rm   bts2025-server-cont || true
             docker run -d --name bts2025-server-cont \ 
-            --env-file /etc/myapp/myapp.env \
+            --env-file myapp/myapp.env \
             -p 8080:8080 \
             "$IMAGE"
 
