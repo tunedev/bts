@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../auth/AuthContext"; // Adjust import path
+import { apiClient } from "utils/api";
 
 // Define types for your data
 interface RSVP {
@@ -25,17 +26,14 @@ export default function RSVPManager() {
     // Fetch RSVPs and Categories
     const fetchData = async () => {
       // Fetch RSVPs
-      const rsvpRes = await fetch(
-        `http://localhost:8091/api/admin/rsvps?status=${filter}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      const rsvpRes = await apiClient(`/api/admin/rsvps?status=${filter}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const rsvpData = await rsvpRes.json();
       setRsvps(rsvpData || []);
 
       // Fetch Categories for the dropdown
-      const catRes = await fetch("http://localhost:8091/api/admin/categories", {
+      const catRes = await apiClient("/api/admin/categories", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const catData = await catRes.json();
@@ -45,7 +43,7 @@ export default function RSVPManager() {
   }, [filter, token]);
 
   const handleApprove = async (rsvpId: string, categoryId: string) => {
-    await fetch("http://localhost:8091/api/admin/rsvps/approve", {
+    await apiClient("/api/admin/rsvps/approve", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

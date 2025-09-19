@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../auth/AuthContext";
+import { apiClient } from "utils/api";
 
 // Define a type for a category
 interface Category {
@@ -25,12 +26,9 @@ export default function CategoryManager() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:8091/api/admin/categories",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
+        const response = await apiClient("/api/admin/categories", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const data = await response.json();
         setCategories(data || []);
       } catch (err) {
@@ -62,20 +60,17 @@ export default function CategoryManager() {
     setIsLoading(true);
     setError("");
     try {
-      const response = await fetch(
-        "http://localhost:8091/api/admin/categories",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ...newCategory,
-            max_guests: parseInt(String(newCategory.max_guests), 10), // Ensure it's a number
-          }),
+      const response = await apiClient("/api/admin/categories", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({
+          ...newCategory,
+          max_guests: parseInt(String(newCategory.max_guests), 10), // Ensure it's a number
+        }),
+      });
       const createdCategory = await response.json();
       if (!response.ok)
         throw new Error(createdCategory.error || "Failed to create category.");

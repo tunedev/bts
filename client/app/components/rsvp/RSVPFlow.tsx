@@ -4,6 +4,7 @@ import SideSelection from "./SideSelection";
 import GuestDetailsForm from "./GuestDetailsForm";
 import SubmissionStatus from "./SubmissionStatus";
 import LoadingSpinner from "./LoadingSpinner"; // A new component for loading state
+import { apiClient } from "utils/api";
 
 // Define a type for the category metadata we expect from the API
 interface CategoryMeta {
@@ -33,9 +34,7 @@ export default function RSVPFlow() {
       const fetchCategoryMeta = async () => {
         try {
           // Call your new Go backend endpoint
-          const response = await fetch(
-            `http://localhost:8091/api/rsvp/meta?token=${token}`,
-          );
+          const response = await apiClient(`/api/rsvp/meta?token=${token}`);
           if (!response.ok) {
             throw new Error("Invitation not found.");
           }

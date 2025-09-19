@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { apiClient } from "utils/api";
 
 interface Props {
   onSubmit: (response: { status?: string; error?: string }) => void;
@@ -46,7 +47,7 @@ export default function GuestDetailsForm({
 
     try {
       // Point this to your backend API endpoint
-      const response = await fetch("http://localhost:8091/api/rsvp", {
+      const response = await apiClient("/api/rsvp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

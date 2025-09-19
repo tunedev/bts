@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../auth/AuthContext";
+import { apiClient } from "utils/api";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -16,14 +17,11 @@ export default function AdminLogin() {
     setIsLoading(true);
     setError("");
     try {
-      const response = await fetch(
-        "http://localhost:8091/api/admin/login/start",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        },
-      );
+      const response = await apiClient("/api/admin/login/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
       if (!response.ok)
         throw new Error("Could not send OTP. Please check your email.");
       setStep(2);
@@ -39,14 +37,11 @@ export default function AdminLogin() {
     setIsLoading(true);
     setError("");
     try {
-      const response = await fetch(
-        "http://localhost:8091/api/admin/login/verify",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, otp }),
-        },
-      );
+      const response = await apiClient("/api/admin/login/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp }),
+      });
       const data = await response.json();
       if (!response.ok)
         throw new Error(data.error || "Invalid or expired OTP.");
