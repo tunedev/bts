@@ -13,7 +13,6 @@ FROM debian:bookworm-slim
 
 WORKDIR /app
 
-COPY .env .
 COPY --from=builder /app/ .
 
 EXPOSE 8080
