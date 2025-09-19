@@ -16,6 +16,6 @@ WORKDIR /app
 COPY .env .
 COPY --from=builder /app/ .
 
-RUN ls -alh /app
+EXPOSE 8080
 
 CMD ["/app/server"]
