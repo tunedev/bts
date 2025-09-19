@@ -107,7 +107,7 @@ jobs:
             IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/bts2025-server:${{ github.event.release.tag_name }}
 
             mkdir -p myapp
-            gcloud secrets versions access latest --secret="bts-2025-staging" > myapp/myapp.env
+            gcloud secrets versions access latest --secret="bts-2025-prod" > myapp/myapp.env
             chmod 600 myapp/myapp.env
 
             docker pull "$IMAGE"
