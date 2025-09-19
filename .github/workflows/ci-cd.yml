@@ -1,0 +1,54 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./server
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/your-backend-app:latest
+deploy:
+  needs: build-and-push
+  runs-on: ubuntu-latest
+
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Deploy to GCP VM via SSH
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.GCP_SSH_HOST }}
+        username: ${{ secrets.GCP_SSH_USERNAME }}
+        key: ${{ secrets.GCP_SSH_KEY }}
+        script: |
+          # Navigate to your project directory on the server
+          cd /path/to/your/app
+
+          # Pull the latest Docker image for the backend
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/your-backend-app:latest
+
+          # (Optional) You can use Docker Compose on the server for easier management
+          # docker-compose up -d --pull
+
+          # Or restart the specific container
+          docker stop your-backend-container-name || true
+          docker rm your-backend-container-name || true
+          docker run -d --name your-backend-container-name -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/your-backend-app:latest

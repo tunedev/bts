@@ -1,0 +1,125 @@
+/* Admin Login Page */
+.admin-login-container {
+  display: grid;
+  place-content: center;
+  min-height: 100vh;
+  background-color: #f4f4f4;
+}
+.admin-login-box {
+  background: white;
+  padding: 2rem 3rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 400px;
+}
+.admin-login-box input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.admin-login-box button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #333;
+  color: white;
+  cursor: pointer;
+}
+.admin-login-box .link-button {
+  background: none;
+  color: #555;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+.admin-login-box .error-message {
+  color: #d9534f;
+  margin-top: 1rem;
+}
+
+/* Admin Dashboard Layout */
+.admin-dashboard {
+  max-width: 1200px;
+  margin: 2rem auto;
+  font-family: sans-serif;
+}
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+.admin-main {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+.admin-card {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+.admin-card h2 {
+  margin-top: 0;
+}
+
+/* RSVP Manager Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th,
+td {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+th {
+  color: #888;
+  font-size: 0.9rem;
+}
+.status {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+.status.pending {
+  background-color: #fcf8e3;
+  color: #8a6d3b;
+}
+.status.approved {
+  background-color: #dff0d8;
+  color: #3c763d;
+}
+.status.rejected {
+  background-color: #f2dede;
+  color: #a94442;
+}
+.action-group {
+  display: flex;
+  gap: 0.5rem;
+}
+.action-group button,
+.action-group select {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.action-group .approve {
+  background-color: #5cb85c;
+  color: white;
+  border-color: #4cae4c;
+}
+.action-group .reject {
+  background-color: #d9534f;
+  color: white;
+  border-color: #d43f3a;
+}

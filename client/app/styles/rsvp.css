@@ -1,0 +1,227 @@
+.rsvp-layout .left-panel {
+  justify-content: space-between; /* Pushes logo to top, content to bottom */
+  align-items: flex-start; /* Aligns items to the left */
+  padding: 3rem;
+  position: relative; /* Needed for the overlay */
+}
+
+/* Add a darker overlay for better text contrast */
+.rsvp-layout .left-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.35);
+  z-index: 1;
+}
+
+/* Ensure logo and text are on top of the overlay */
+.rsvp-layout .home-logo-link,
+.rsvp-layout .left-panel-content {
+  position: relative;
+  z-index: 2;
+}
+
+.rsvp-layout .link-panel-content {
+  width: 100%;
+}
+
+/* Style for the "BTS" logo link */
+.home-logo-link {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+  border: 2px solid white;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  transition: all 0.3s ease;
+}
+
+.home-logo-link:hover {
+  background-color: white;
+  color: #333;
+}
+
+/* Position the "Join Us" text at the bottom-left */
+.rsvp-layout .left-panel-content {
+  text-align: left;
+  margin-top: auto; /* Ensures it stays at the bottom */
+}
+
+/* Make the "Join Us" title larger */
+.rsvp-layout .left-panel-content h1 {
+  font-size: clamp(4rem, 10vw, 7rem);
+  margin-bottom: 0.5rem;
+}
+
+/* Style the subtext */
+.rsvp-layout .left-panel-content p {
+  font-size: 1.1rem;
+}
+
+/* Ensure the form on the right is vertically centered */
+.rsvp-right-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.rsvp-container {
+  max-width: 500px;
+  margin: 4rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  font-family: "Montserrat", sans-serif;
+  border: 1px solid #eee;
+}
+
+.rsvp-step {
+  text-align: center;
+}
+
+.rsvp-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.side-selection-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.rsvp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  text-align: left;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.form-group input,
+.form-group select {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: "Montserrat", sans-serif;
+}
+
+.form-error {
+  color: #d9534f;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.rsvp-button {
+  padding: 14px 28px;
+  border: 1px solid #333;
+  background-color: transparent;
+  color: #333;
+  font-size: 1rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+}
+
+.rsvp-button:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+.rsvp-button.submit {
+  background-color: #333;
+  color: #fff;
+  margin-top: 1rem;
+}
+
+.rsvp-button:disabled {
+  background-color: #ccc;
+  border-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.submission-status p {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.2rem;
+  line-height: 1.7;
+  color: #555;
+}
+
+.status-error-message {
+  color: #d9534f;
+  font-weight: bold;
+}
+
+.status-icon {
+  font-size: 3rem;
+  line-height: 80px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin: 0 auto 1.5rem;
+}
+
+.status-icon.success {
+  background-color: #dff0d8;
+  color: #3c763d;
+}
+.status-icon.pending {
+  background-color: #fcf8e3;
+  color: #8a6d3b;
+}
+.status-icon.error {
+  background-color: #f2dede;
+  color: #a94442;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3; /* Light grey */
+  border-top: 4px solid #586458; /* Your theme's green */
+  border-radius: 50%;
+  margin: auto;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (min-width: 600px) {
+  .side-selection-buttons {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
