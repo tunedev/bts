@@ -73,7 +73,7 @@ jobs:
             set -euo pipefail
             IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/bts2025-server:staging
 
-            mkdir -p /etc/myapp
+            mkdir -p myapp
             gcloud secrets versions access latest --secret="bts-2025-staging" > myapp/myapp.env
             chmod 600 myapp/myapp.env
 
