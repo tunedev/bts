@@ -2,53 +2,105 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - main
+    branches: [main] # staging
+  release:
+    types: [published] # production
+
+permissions:
+  contents: read
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    # Attach the environment whose secrets we need for the build/push
+    environment: ${{ github.event_name == 'release' && 'production' || 'staging' }}
+    outputs:
+      env_name: ${{ steps.meta.outputs.ENV }}
+      image_tags: ${{ steps.meta.outputs.TAGS }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+      - name: Decide environment & tags
+        id: meta
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            echo "ENV=production" >> $GITHUB_OUTPUT
+            # e.g. v1.2.3
+            echo "TAGS=${{ secrets.DOCKERHUB_USERNAME }}/bts2025-server:${{ github.event.release.tag_name }},${{ secrets.DOCKERHUB_USERNAME }}/bts2025-server:latest" >> $GITHUB_OUTPUT
+          else
+            SHORT_SHA="${GITHUB_SHA::7}"
+            echo "ENV=staging" >> $GITHUB_OUTPUT
+            echo "TAGS=${{ secrets.DOCKERHUB_USERNAME }}/bts2025-server:staging-${SHORT_SHA},${{ secrets.DOCKERHUB_USERNAME }}/bts2025-server:staging" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Validate Docker Hub secrets
+        run: |
+          test -n "${{ secrets.DOCKERHUB_USERNAME }}" || { echo "Missing secret: DOCKERHUB_USERNAME"; exit 1; }
+          test -n "${{ secrets.DOCKERHUB_TOKEN }}"    || { echo "Missing secret: DOCKERHUB_TOKEN"; exit 1; }
+
+      - name: Docker Hub login
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push backend image
-        uses: docker/build-push-action@v4
+      - name: Build & push image
+        uses: docker/build-push-action@v6
         with:
           context: ./server
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/bts2025-server:latest
-  deploy:
+          # multiple tags, comma-separated
+          tags: ${{ steps.meta.outputs.TAGS }}
+
+  deploy-staging:
     needs: build-and-push
+    if: ${{ needs.build-and-push.outputs.env_name == 'staging' }}
     runs-on: ubuntu-latest
-
+    environment: staging
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Deploy to GCP VM via SSH
-        uses: appleboy/ssh-action@master
+      - name: Deploy to STAGING VM via SSH
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.GCP_SSH_HOST }}
           username: ${{ secrets.GCP_SSH_USERNAME }}
           key: ${{ secrets.GCP_SSH_KEY }}
+          script_stop: true
           script: |
-            # Navigate to your project directory on the server
+            set -euo pipefail
             cd /path/to/your/app
-
-            # Pull the latest Docker image for the backend
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/bts2025-server:latest
-
-            # (Optional) You can use Docker Compose on the server for easier management
-            # docker-compose up -d --pull
-
-            # Or restart the specific container
+            # Pull the staging tag set above (last tag in list is 'staging', which tracks latest staging)
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/bts2025-server:staging
             docker stop bts2025-server-cont || true
-            docker rm bts2025-server-cont || true
-            docker run -d --name bts2025-server-cont -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/bts2025-server:latest
+            docker rm   bts2025-server-cont || true
+            docker run -d --name bts2025-server-cont -p 8080:8080 \
+              ${{ secrets.DOCKERHUB_USERNAME }}/bts2025-server:staging
+
+  deploy-production:
+    needs: build-and-push
+    if: ${{ needs.build-and-push.outputs.env_name == 'production' }}
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to PROD VM via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.GCP_SSH_HOST }}
+          username: ${{ secrets.GCP_SSH_USERNAME }}
+          key: ${{ secrets.GCP_SSH_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            cd /path/to/your/app
+            # Use the immutable release tag for prod for precise rollbacks
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/bts2025-server:${{ github.event.release.tag_name }}
+            docker stop bts2025-server-cont || true
+            docker rm   bts2025-server-cont || true
+            docker run -d --name bts2025-server-cont -p 8080:8080 \
+              ${{ secrets.DOCKERHUB_USERNAME }}/bts2025-server:${{ github.event.release.tag_name }}
