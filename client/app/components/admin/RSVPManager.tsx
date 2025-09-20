@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../auth/AuthContext"; // Adjust import path
-import { apiClient } from "utils/api";
+import { apiClient } from "../../../utils/api";
 
 // Define types for your data
 interface RSVP {

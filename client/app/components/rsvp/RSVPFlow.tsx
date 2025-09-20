@@ -4,7 +4,7 @@ import SideSelection from "./SideSelection";
 import GuestDetailsForm from "./GuestDetailsForm";
 import SubmissionStatus from "./SubmissionStatus";
 import LoadingSpinner from "./LoadingSpinner"; // A new component for loading state
-import { apiClient } from "utils/api";
+import { apiClient } from "../../../utils/api";
 
 // Define a type for the category metadata we expect from the API
 interface CategoryMeta {

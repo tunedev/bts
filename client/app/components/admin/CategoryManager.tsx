@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../auth/AuthContext";
-import { apiClient } from "utils/api";
+import { apiClient } from "../../../utils/api";
 
 // Define a type for a category
 interface Category {
