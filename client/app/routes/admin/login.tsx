@@ -44,7 +44,7 @@ export default function AdminLogin() {
       });
       if (!response.success)
         throw new Error(response.error || "Invalid or expired OTP.");
-      login(response.token);
+      login(response.data.token);
       navigate("/admin/dashboard");
     } catch (err: any) {
       setError(err.message);
