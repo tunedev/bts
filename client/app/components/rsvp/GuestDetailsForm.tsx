@@ -24,7 +24,7 @@ export default function GuestDetailsForm({
     name: "",
     email: "",
     phone: "",
-    guests: "1",
+    guests: 1,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setAPIError] = useState("");
@@ -50,7 +50,7 @@ export default function GuestDetailsForm({
 
     if (!formData.email.trim()) {
       newErrors.email = "Email address is required.";
-    } else if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "Please enter a valid email address.";
     }
 
