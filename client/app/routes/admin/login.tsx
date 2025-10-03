@@ -22,7 +22,7 @@ export default function AdminLogin() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-      if (!response.ok)
+      if (!response.success)
         throw new Error("Could not send OTP. Please check your email.");
       setStep(2);
     } catch (err: any) {
@@ -42,10 +42,9 @@ export default function AdminLogin() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, otp }),
       });
-      const data = await response.json();
-      if (!response.ok)
-        throw new Error(data.error || "Invalid or expired OTP.");
-      login(data.token);
+      if (!response.success)
+        throw new Error(response.error || "Invalid or expired OTP.");
+      login(response.token);
       navigate("/admin/dashboard");
     } catch (err: any) {
       setError(err.message);

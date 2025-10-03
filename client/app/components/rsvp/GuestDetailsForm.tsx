@@ -92,7 +92,7 @@ export default function GuestDetailsForm({
       if (!response.success) {
         throw new Error(response.error || "An unknown error occurred.");
       }
-      onSubmit(response);
+      onSubmit(response.data);
     } catch (err: any) {
       setAPIError(err.message);
       onSubmit({ error: err.message });

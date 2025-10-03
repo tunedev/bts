@@ -35,10 +35,10 @@ export default function RSVPFlow() {
         try {
           // Call your new Go backend endpoint
           const response = await apiClient(`/api/rsvp/meta?token=${token}`);
-          if (!response.ok) {
+          if (!response.success) {
             throw new Error("Invitation not found.");
           }
-          const data: CategoryMeta = await response.json();
+          const data: CategoryMeta = response.data;
           setCategoryMeta(data);
           setStep(2); // Move to the form step
         } catch (error: any) {

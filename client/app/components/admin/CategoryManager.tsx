@@ -29,7 +29,13 @@ export default function CategoryManager() {
         const response = await apiClient("/api/admin/categories", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const data = await response.json();
+        if (!response.success) {
+          throw new Error(
+            response.error || "error occurred whiole fetching categories",
+          );
+        }
+        const data = response.data;
+        console.log("any insight ===>>>>>>>>", data);
         setCategories(data || []);
       } catch (err) {
         console.error("Failed to fetch categories:", err);
@@ -71,10 +77,10 @@ export default function CategoryManager() {
           max_guests: parseInt(String(newCategory.max_guests), 10), // Ensure it's a number
         }),
       });
-      const createdCategory = await response.json();
-      if (!response.ok)
-        throw new Error(createdCategory.error || "Failed to create category.");
+      if (!response.success)
+        throw new Error(response.error || "Failed to create category.");
 
+      const createdCategory = response.data;
       setCategories((prev) => [...prev, createdCategory]);
       // Reset form
       setNewCategory({ name: "", side: "BRIDE", max_guests: 50 });
