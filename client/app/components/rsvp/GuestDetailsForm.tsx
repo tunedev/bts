@@ -53,13 +53,11 @@ export default function GuestDetailsForm({
         body: JSON.stringify(payload),
       });
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || "An unknown error occurred.");
+      if (!response.success) {
+        throw new Error(response.error || "An unknown error occurred.");
       }
 
-      onSubmit(result); // Pass the full result object
+      onSubmit(response);
     } catch (err: any) {
       setError(err.message);
       onSubmit({ error: err.message }); // Also pass error up to parent
