@@ -210,6 +210,25 @@
   animation: spin 1s linear infinite;
 }
 
+.form-subtext {
+  text-align: center;
+  margin-top: -1rem;
+  margin-bottom: 2rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.validation-error {
+  color: #d9534f; /* A reddish error color */
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+
+/* Style for input fields with errors */
+input[aria-invalid="true"] {
+  border-color: #d9534f;
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);

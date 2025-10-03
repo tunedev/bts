@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router";
 
 const weddingDate = new Date("2025-11-22T00:00:00+01:00");
 const oneWeekBefore = new Date(weddingDate);
@@ -57,9 +56,9 @@ export default function HeroDetails() {
             Locate Venue
           </a>
         ) : (
-          <Link to="/rsvp" className="rsvp-button">
+          <a href="/rsvp" className="rsvp-button">
             RSVP
-          </Link>
+          </a>
         )}
       </div>
     </section>
