@@ -210,12 +210,13 @@ body {
 
   .left-panel {
     width: 100%;
-    height: 100vh;
+    height: 90vh;
     position: relative;
   }
 
   .right-panel {
     width: 100%;
+    height: 90vh;
   }
 
   .story-section {

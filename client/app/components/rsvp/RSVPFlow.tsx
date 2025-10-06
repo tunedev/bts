@@ -16,7 +16,7 @@ interface CategoryMeta {
 export default function RSVPFlow() {
   const [searchParams] = useSearchParams();
   const [step, setStep] = useState(1);
-  const [isLoading, setIsLoading] = useState(true); // Start with loading true
+  const [isLoading, setIsLoading] = useState(true);
   const [categoryMeta, setCategoryMeta] = useState<CategoryMeta | null>(null);
   const [rsvpData, setRsvpData] = useState({
     token: "",
@@ -24,7 +24,6 @@ export default function RSVPFlow() {
     error: "",
   });
 
-  // This effect now handles fetching category data for token-based RSVPs
   useEffect(() => {
     const token = searchParams.get("token");
 
@@ -33,14 +32,13 @@ export default function RSVPFlow() {
 
       const fetchCategoryMeta = async () => {
         try {
-          // Call your new Go backend endpoint
           const response = await apiClient(`/api/rsvp/meta?token=${token}`);
           if (!response.success) {
             throw new Error("Invitation not found.");
           }
           const data: CategoryMeta = response.data;
           setCategoryMeta(data);
-          setStep(2); // Move to the form step
+          setStep(2);
         } catch (error: any) {
           setRsvpData((prev) => ({
             ...prev,
@@ -54,14 +52,19 @@ export default function RSVPFlow() {
       };
       fetchCategoryMeta();
     } else {
-      setIsLoading(false); // No token, so we are not loading anything
-      setStep(1); // Start with side selection
+      setIsLoading(false);
+      setStep(1);
     }
   }, [searchParams]);
 
   const handleSideSelect = (side: "BRIDE" | "GROOM") => {
-    setCategoryMeta({ name: `${side}'s Guest`, side, remainingGuests: 0 }); // Create placeholder meta
+    setCategoryMeta({ name: `${side}'s Guest`, side, remainingGuests: 0 });
     setStep(2);
+  };
+
+  const handleGoBack = () => {
+    setStep(1);
+    setCategoryMeta(null);
   };
 
   const handleFormSubmit = (apiResponse: {
@@ -85,7 +88,6 @@ export default function RSVPFlow() {
   };
 
   const handleTryAgain = () => {
-    // This logic can be simplified as the useEffect will handle the reset
     window.location.reload();
   };
 
@@ -102,8 +104,9 @@ export default function RSVPFlow() {
           <GuestDetailsForm
             onSubmit={handleFormSubmit}
             token={rsvpData.token}
-            categoryName={categoryMeta?.name} // Pass the category name to the form
+            categoryName={categoryMeta?.name}
             side={categoryMeta?.side}
+            onGoBack={handleGoBack}
           />
         );
       case 3:

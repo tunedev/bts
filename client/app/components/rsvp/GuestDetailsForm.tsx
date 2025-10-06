@@ -6,6 +6,7 @@ interface Props {
   token?: string;
   side?: string;
   categoryName?: string;
+  onGoBack: () => void;
 }
 
 type FormErrors = {
@@ -19,6 +20,7 @@ export default function GuestDetailsForm({
   token,
   side,
   categoryName,
+  onGoBack,
 }: Props) {
   const [formData, setFormData] = useState({
     name: "",
@@ -101,10 +103,24 @@ export default function GuestDetailsForm({
     }
   };
 
+  const showbackButton = !token;
+
   return (
-    <div className="rsvp-step">
-      <h2 className="rsvp-title">Kindly Confirm Your Details</h2>
-      <p className="form-subtext">All fields are required.</p>
+    <div className="rsvp-step rsvp-form-container">
+      {showbackButton && (
+        <button onClick={onGoBack} className="back-button">
+          &larr;
+        </button>
+      )}
+
+      <div className="form-header">
+        <h2 className="rsvp-title">
+          {categoryName
+            ? `RSVP for ${categoryName}`
+            : "Kindly Confirm Your Details"}
+        </h2>
+        <p className="form-subtext">All fields are required.</p>
+      </div>
 
       <form onSubmit={handleSubmit} className="rsvp-form">
         <div className="form-group">

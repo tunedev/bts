@@ -13,19 +13,32 @@ export default function StorySection() {
         <h2 className="section-title">STORY</h2>
         <div className="story-text">
           <p>
-            The first time I saw him, we were both sitting at the same gate for a
-            flight to San Diego. I remember glancing over at him and thinking,
-            Oh, wow, he's cute. When I got to my seat, I saw that the seat
-            beside me was empty and thought, how awesome would it be if he ended
-            up next to me?
+            I first saw her briefly at a friend’s Christmas party in 2015. As
+            God would have it, she came to celebrate my birthday the following
+            year, but we still didn’t get the chance to talk. Then, on Christmas
+            Day, I stylishly asked for her contact-and that simple moment marked
+            the beginning of our friendship.
           </p>
           <p>
-            Well, he did. We started talking, and then he asked for my number and
-            we went our separate ways. I was certain I would never hear from him
-            again. I thought about him often, but eventually he faded into the
-            ‘missed connections’ category. A few months later, out of the blue,
-            he sent me [a message that said] ‘Happy New Year.’ We hit it off like
-            nothing ever changed.
+            From the start, I wanted something more than friendship, but she
+            always said she was “enjoying her singleness” and insisted we should
+            just be friends. Eventually, I stopped bringing it up (even though
+            she was always on my mind). I still remember jokingly asking her to
+            be my bestie so she could give me advice on how to talk to other
+            girls-but she wasn’t having it!
+          </p>
+          <p>
+            Fast forward to 2021-after I was shot, life took a turn that
+            reminded us both how precious every moment is. Three months after
+            that near-death experience, she agreed to be mine, and our love
+            story truly began.
+          </p>
+          <p>
+            Four beautiful years later, we’re still here-loving, growing, and
+            laughing together. We got engaged at our favourite restaurant,
+            surrounded by memories of how far we’ve come. And now, we’re ready
+            to walk into forever-hand in hand, hearts full of God's love, joy,
+            peace, and harmony.
           </p>
         </div>
       </div>
