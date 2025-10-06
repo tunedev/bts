@@ -320,6 +320,7 @@ input[aria-invalid="true"] {
     justify-content: center;
     flex-grow: 1;
     padding-top: 4rem;
+    color: black;
   }
 
   .mobile-rsvp-form-container .rsvp-container {
@@ -327,6 +328,7 @@ input[aria-invalid="true"] {
     padding: 1rem;
     max-height: 80vh;
     overflow-y: auto;
+    color: black;
   }
 
   .mobile-rsvp-form-container .rsvp-title {
@@ -368,7 +370,6 @@ input[aria-invalid="true"] {
   }
 
   .back-button {
-    /* Keep the button absolutely positioned relative to the container */
     position: absolute;
     top: 3px; /* Adjust vertical position */
     left: -13px;
