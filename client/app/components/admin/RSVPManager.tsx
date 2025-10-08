@@ -29,7 +29,7 @@ export default function RSVPManager() {
       const rsvpRes = await apiClient(`/api/admin/rsvps?status=${filter}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const rsvpData = await rsvpRes.json();
+      const rsvpData = rsvpRes.data;
       setRsvps(rsvpData || []);
 
       // Fetch Categories for the dropdown
