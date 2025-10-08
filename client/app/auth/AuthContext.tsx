@@ -11,16 +11,16 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(
-    localStorage.getItem("adminToken"),
+    localStorage.getItem("adminNewToken"),
   );
 
   const login = (newToken: string) => {
-    localStorage.setItem("adminToken", newToken);
+    localStorage.setItem("adminNewToken", newToken);
     setToken(newToken);
   };
 
   const logout = () => {
-    localStorage.removeItem("adminToken");
+    localStorage.removeItem("adminNewToken");
     setToken(null);
   };
 
