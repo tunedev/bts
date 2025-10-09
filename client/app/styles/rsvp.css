@@ -370,8 +370,6 @@ input[aria-invalid="true"] {
   }
 
   .back-button {
-    position: absolute;
-    top: 3px; /* Adjust vertical position */
-    left: -13px;
+    display: none;
   }
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet } from "react-router";
+import { Link, Outlet } from "react-router";
 
 import useImageFadeOnScroll from "../hooks/useImageFadeOnScroll";
 import useWindowSize from "../hooks/useWindowSize";
@@ -48,6 +48,9 @@ export default function WelcomePageFrame() {
           opacity: opacity,
         }}
       >
+        <Link to="/" className="home-logo-link">
+          BTS
+        </Link>
         <div className="left-panel-content welcome-content">
           <h1>Becoming The Sanusi's</h1>
           <p>

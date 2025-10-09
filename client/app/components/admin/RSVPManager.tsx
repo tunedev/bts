@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../auth/AuthContext"; // Adjust import path
 import { apiClient } from "../../../utils/api";
 
@@ -20,27 +20,37 @@ export default function RSVPManager() {
   const [filter, setFilter] = useState("PENDING");
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const { token } = useAuth();
 
-  useEffect(() => {
-    // Fetch RSVPs and Categories
-    const fetchData = async () => {
-      // Fetch RSVPs
+  const fetchData = useCallback(async () => {
+    if (!token) {
+      return;
+    }
+    setIsLoading(true);
+
+    try {
       const rsvpRes = await apiClient(`/api/admin/rsvps?status=${filter}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const rsvpData = rsvpRes.data;
-      setRsvps(rsvpData || []);
+      setRsvps(rsvpRes.data || []);
+      if (categories.length === 0) {
+        const catRes = await apiClient("/api/admin/categories", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setCategories(catRes.data || []);
+      }
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [token, filter, categories.length]);
 
-      // Fetch Categories for the dropdown
-      const catRes = await apiClient("/api/admin/categories", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const catData = await catRes.json();
-      setCategories(catData || []);
-    };
+  useEffect(() => {
     fetchData();
-  }, [filter, token]);
+  }, [fetchData]);
 
   const handleApprove = async (rsvpId: string, categoryId: string) => {
     await apiClient("/api/admin/rsvps/approve", {
@@ -51,35 +61,55 @@ export default function RSVPManager() {
       },
       body: JSON.stringify({ rsvpId, action: "APPROVE", categoryId }),
     });
-    // Refresh list
     setFilter((f) => (f === "PENDING" ? "PENDING_" : "PENDING"));
   };
 
   const handleReject = async (rsvpId: string) => {
-    // Similar fetch call with action: 'REJECT'
+    try {
+      await apiClient("/api/admin/rsvps/approve", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ rsvpId, action: "REJECT" }),
+      });
+      fetchData();
+    } catch (error) {
+      console.error("Failed to reject RSVP:", error);
+    }
   };
 
   return (
     <div className="admin-card">
       <h2>RSVP Management</h2>
-      <div className="filters">
+      <div className="header-btns">
+        <div className="filters">
+          <button
+            onClick={() => setFilter("PENDING")}
+            className={filter === "PENDING" ? "active" : ""}
+          >
+            Pending
+          </button>
+          <button
+            onClick={() => setFilter("APPROVED")}
+            className={filter === "APPROVED" ? "active" : ""}
+          >
+            Approved
+          </button>
+          <button
+            onClick={() => setFilter("REJECTED")}
+            className={filter === "REJECTED" ? "active" : ""}
+          >
+            Rejected
+          </button>
+        </div>
         <button
-          onClick={() => setFilter("PENDING")}
-          className={filter === "PENDING" ? "active" : ""}
+          onClick={fetchData}
+          className="refresh-button"
+          disabled={isLoading}
         >
-          Pending
-        </button>
-        <button
-          onClick={() => setFilter("APPROVED")}
-          className={filter === "APPROVED" ? "active" : ""}
-        >
-          Approved
-        </button>
-        <button
-          onClick={() => setFilter("REJECTED")}
-          className={filter === "REJECTED" ? "active" : ""}
-        >
-          Rejected
+          &#x21bb; {/* This is a circular arrow character */}
         </button>
       </div>
       <table>
@@ -92,55 +122,57 @@ export default function RSVPManager() {
           </tr>
         </thead>
         <tbody>
-          {rsvps.map((rsvp) => (
-            <tr key={rsvp.id}>
-              <td>{rsvp.guest_name}</td>
-              <td>{rsvp.number_of_guests}</td>
-              <td>
-                <span className={`status ${rsvp.status.toLowerCase()}`}>
-                  {rsvp.status}
-                </span>
-              </td>
-              <td>
-                {rsvp.status === "PENDING" && (
-                  <div className="action-group">
-                    {!rsvp.category_id && (
-                      <select
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                        defaultValue=""
-                      >
-                        <option value="" disabled>
-                          Assign Category...
-                        </option>
-                        {categories.map((cat) => (
-                          <option key={cat.id} value={cat.id}>
-                            {cat.name}
+          {rsvps
+            .filter((d) => d.status === filter)
+            .map((rsvp) => (
+              <tr key={rsvp.id}>
+                <td>{rsvp.guest_name}</td>
+                <td>{rsvp.number_of_guests}</td>
+                <td>
+                  <span className={`status ${rsvp.status.toLowerCase()}`}>
+                    {rsvp.status}
+                  </span>
+                </td>
+                <td>
+                  {rsvp.status === "PENDING" && (
+                    <div className="action-group">
+                      {!rsvp.category_id && (
+                        <select
+                          onChange={(e) => setSelectedCategory(e.target.value)}
+                          defaultValue=""
+                        >
+                          <option value="" disabled>
+                            Assign Category...
                           </option>
-                        ))}
-                      </select>
-                    )}
-                    <button
-                      onClick={() =>
-                        handleApprove(
-                          rsvp.id,
-                          rsvp.category_id || selectedCategory,
-                        )
-                      }
-                      className="approve"
-                    >
-                      Approve
-                    </button>
-                    <button
-                      onClick={() => handleReject(rsvp.id)}
-                      className="reject"
-                    >
-                      Reject
-                    </button>
-                  </div>
-                )}
-              </td>
-            </tr>
-          ))}
+                          {categories.map((cat) => (
+                            <option key={cat.id} value={cat.id}>
+                              {cat.name}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                      <button
+                        onClick={() =>
+                          handleApprove(
+                            rsvp.id,
+                            rsvp.category_id || selectedCategory,
+                          )
+                        }
+                        className="approve"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => handleReject(rsvp.id)}
+                        className="reject"
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  )}
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>

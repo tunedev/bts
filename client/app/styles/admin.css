@@ -192,6 +192,39 @@ th {
   background-color: #e4e6e9;
 }
 
+/* Add this new rule for the card header */
+.header-btns {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: -0.5rem; /* Adjust spacing with filters */
+}
+
+/* Add this new rule for the refresh button */
+.refresh-button {
+  background: none;
+  border: 1px solid #ddd;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  color: #555;
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+  transition: all 0.2s ease;
+}
+
+.refresh-button:hover {
+  background-color: #f0f0f0;
+  border-color: #ccc;
+}
+
+.refresh-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 @media (max-width: 768px) {
   .admin-dashboard {
     margin: 0;
